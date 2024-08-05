@@ -9,11 +9,10 @@ chapter = 1
 
 # Loop para percorrer os volumes e capítulos
 while True:
-    # Formatação da URL e cabeçalhos HTTP
+    # Formatação da URL, cabeçalhos e requisição HTTP
     url = f'https://novelmania.com.br/novels/magus-supremo-ms/capitulos/volume-{volume}-capitulo-{chapter}'
     headers = {'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"}
 
-    # Fazendo a requisição HTTP
     site = requests.get(url, headers=headers)
     
     # Verificando se a requisição foi bem-sucedida
@@ -29,19 +28,17 @@ while True:
 
         # Verificando se o elemento 'box' foi encontrado
         if box:
-            # Extração e limpeza do título
+            # Extração e limpeza do título e remoção de elementos desnecessarios do texto
             title = box.find('h2', class_="mt-0 mb-3 text-center").text
             title = re.sub(r'[\\/*?:"<>|]', "", title)
 
-            # Remoção de elementos desnecessários e extração do conteúdo
             for tag in box(['h3']):
                 tag.decompose()
             content = box.text.strip()
 
-            # Construir o caminho completo para o arquivo
+            # Constroi o caminho e salva o conteúdo do arquivo
             file_path = os.path.join(output_dir, f'{title}.txt')
 
-            # Salvando o conteúdo em um arquivo
             with open(file_path, 'w', encoding='utf-8') as file:
                 file.write(content)
 
@@ -56,6 +53,6 @@ while True:
     else:
         print(f"Erro ao acessar a página: Status code {site.status_code} para o capítulo {chapter} do volume {volume}.")
         
-        # Incrementar o volume e tentar o próximo capítulo
+        # Incrementa o volume e tenta o próximo capítulo
         volume += 1
         chapter += 1
