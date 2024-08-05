@@ -3,13 +3,6 @@ from bs4 import BeautifulSoup
 import re
 import os
 
-# Diretório onde os arquivos serão salvos
-output_dir = 'capitulos'
-
-# Verificar se o diretório existe, caso contrário, criar
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
-
 # Definindo o volume e o capítulo inicial
 volume = 1
 chapter = 1
@@ -27,6 +20,12 @@ while True:
     if site.status_code == 200:
         soup = BeautifulSoup(site.content, 'html.parser')
         box = soup.find('div', class_='text')
+
+        # Verificação e criação do diretório onde os arquivos serão salvos
+        output_dir = f'volume {volume}'
+
+        if not os.path.exists(output_dir):
+          os.makedirs(output_dir)
 
         # Verificando se o elemento 'box' foi encontrado
         if box:
@@ -54,7 +53,6 @@ while True:
         else:
             print(f"Elemento 'box' não encontrado no capítulo {chapter} do volume {volume}.")
             break
-
     else:
         print(f"Erro ao acessar a página: Status code {site.status_code} para o capítulo {chapter} do volume {volume}.")
         
